@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html"
+xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+xmlns:f="http://xmlns.jcp.org/jsf/core"
+xmlns:composite="http://xmlns.jcp.org/jsf/composite">
+<!-- INTERFACE -->
+<composite:interface>
+  <composite:attribute name="article" type="jboard.model.Article" required="true"/>
+</composite:interface>
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+  <div class="jboard">
+    <h:form>
+    <div class="jbhead">
+      <span class="jbhead date"><h:outputText value="#{cc.attrs.article.date}" ><f:convertDateTime pattern="MMM dd"/></h:outputText>
+      </span>
+      <h:commandLink actionListener="#{jboardController.openArticle(cc.attrs.article.id)}"><span class="jbhead title"><h:outputText value="#{cc.attrs.article.title}" /></span></h:commandLink>
+    </div>
+    <ui:fragment rendered="#{jboardController.articleOpen(cc.attrs.article.id)}">
+    <div class="jbcomment wrap"><div class="jbcomment casehead"><span class="jbcomment code">User Comments</span></div>
+      <ui:repeat var="articleComment" value="#{cc.attrs.article.articleComments}" >
+        <div class="jbcomment srow"><span class="casestar">
+        <ui:repeat var="i" value="#{jboardController.repeatNTimes(articleComment.importance)}">
+            <span class="glyphicon glyphicon-star"/>      
+        </ui:repeat>
+        </span>
+        <span class="jbcomment code titlepath"><h:outputText value="#{articleComment.comment}" /></span>
+        </div>
+      </ui:repeat>
+    </div>
+    </ui:fragment>
+    <div class="jbsummary wrap"><div class="jbsummary outer"><div class="jbsummary inner"><h:outputText value="#{cc.attrs.article.contents}" /></div></div></div>
+    <div class="jboard jbtail" />
+    </h:form>
+  </div>
+</composite:implementation>
+</html>

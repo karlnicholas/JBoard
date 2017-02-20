@@ -7,15 +7,16 @@
 <h:head>
   <!-- Required meta tags always come first -->
   <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
   <link rel="stylesheet" type="text/css" media="all" href="#{request.contextPath}/webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
   <title><ui:insert name="title"><h:outputText value="Opinions" /></ui:insert></title>
   <ui:insert name="additionalheader" />
-  <h:outputStylesheet name="non-responsive.css" library="css"/>  
+  <h:outputStylesheet name="non-responsive.css" library="css"/>    
 </h:head>
 <h:body a:onScroll="#{onScrollValue}" a:onLoad="#{onLoadValue}">
 <div class="container example2">
-<ui:include src="/template/header.xhtml" />
+<ui:include src="/views/template/header.xhtml" />
 <ui:insert name="content" />
 </div>
 <!-- jQuery first, then Bootstrap JS. -->

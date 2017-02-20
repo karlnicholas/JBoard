@@ -16,18 +16,49 @@
  */
 package jboard.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+
+import jboard.model.Article;
+import jboard.service.ArticleService;
 
 // The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
 // EL name
 // Read more about the @Model stereotype in this FAQ:
 // http://www.cdi-spec.org/faq/#accordion6
 @Model
-public class MemberController {
+public class JboardController {
 
-    @Inject
-    private FacesContext facesContext;
+//    @Inject private FacesContext facesContext;
+    @Inject private ArticleService articleService;
 
+    private List<Article> articleViewList;
+    
+    @PostConstruct
+    public void postConstruct() {
+    	articleViewList = articleService.getArticles();
+    }
+    
+    public List<Article> getArticleViewList() {
+    	return articleViewList;
+    }
+    
+    public void openArticle(Long id) {
+    	
+    }
+    public boolean articleOpen(Long id) {
+    	return true;
+    }
+	//TODO: does this belong in JsfUtils?
+	public List<Integer> repeatNTimes(int count) {
+		List<Integer> result = new ArrayList<Integer>();
+		for (int i=0; i < count; ++i) {
+			result.add(i);
+		}
+		return result;
+	}
 }
