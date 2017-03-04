@@ -1,22 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-    JBoss, Home of Professional Open Source
-    Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
-    contributors by the @authors tag. See the copyright.txt in the
-    distribution for a full listing of individual contributors.
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <name>jboard</name>
     <modelVersion>4.0.0</modelVersion>
     <groupId>jboard</groupId>
@@ -24,7 +7,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <url>http://wildfly.org</url>
+    <url>http://op-jsec.rhcloud.com</url>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -37,7 +20,6 @@
         <module>jboard-web</module>
         <module>jboard-ear</module>
     </modules>
-
     <properties>
         <!-- Explicitly declaring the source encoding eliminates the following 
             message: -->
@@ -50,8 +32,8 @@
         <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 
         <!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
-        <version.jboss.bom>8.2.1.Final</version.jboss.bom>
-        <version.wildfly>9.0.0.Alpha1</version.wildfly>
+        <version.wildfly.bom>10.1.0.Final</version.wildfly.bom>
+        <version.wildfly>10.1.0.Final</version.wildfly>
 
 
         <!-- other plugin versions -->
@@ -59,7 +41,7 @@
         <version.ear.plugin>2.10</version.ear.plugin>
         <version.ejb.plugin>2.3</version.ejb.plugin>
         <version.surefire.plugin>2.16</version.surefire.plugin>
-        <version.war.plugin>2.5</version.war.plugin>
+        <version.war.plugin>2.6</version.war.plugin>
 
         <!-- maven-compiler-plugin -->
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -98,20 +80,11 @@
                 from the Hibernate family of projects) -->
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>jboss-javaee-7.0-with-tools</artifactId>
-                <version>${version.jboss.bom}</version>
+                <artifactId>wildfly-javaee7-with-tools</artifactId>
+                <version>${version.wildfly.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.wildfly.bom</groupId>
-                <artifactId>jboss-javaee-7.0-with-hibernate</artifactId>
-                <version>${version.jboss.bom}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -135,5 +108,63 @@
             </plugins>
         </pluginManagement>
     </build>
-
+    <profiles>
+      <profile>
+		<!-- When built in OpenShift the openshift profile will be used when invoking mvn. -->
+		<!-- Use this profile for any OpenShift specific customization your app will need. -->
+		<!-- By default that is to put the resulting archive into the deployments folder. -->
+		<!-- http://maven.apache.org/guides/mini/guide-building-for-different-environments.html -->
+		 <id>openshift</id>
+		<build>
+				<finalName>jboard</finalName>
+				<plugins>
+				</plugins>
+			</build>
+		</profile>
+    <profile>
+      <id>copy-jars</id>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+              </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-install-plugin</artifactId>
+              <version>2.5.2</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-install-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-statues-jar</id>
+                <phase>prepare-package</phase>
+                <goals>
+                  <goal>install-file</goal>
+                </goals>
+                <configuration>
+                  <groupId>statutes</groupId>
+                  <artifactId>statutes</artifactId>
+                  <version>0.0.1-SNAPSHOT</version>
+                  <file>../../StatuteProjects/statutes/target/statutes-0.0.1-SNAPSHOT.jar</file>
+                  <packaging>jar</packaging>
+                  <localRepositoryPath>repo</localRepositoryPath>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    </profiles>
 </project>
