@@ -16,11 +16,13 @@
  */
 package jboard.controller;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 
 import jboard.model.Article;
@@ -30,16 +32,20 @@ import jboard.service.ArticleService;
 // EL name
 // Read more about the @Model stereotype in this FAQ:
 // http://www.cdi-spec.org/faq/#accordion6
-@Model
-public class JboardController {
+@ManagedBean
+@ViewScoped
+@SuppressWarnings("serial")
+public class JboardController implements Serializable {
 
 //    @Inject private FacesContext facesContext;
     @Inject private ArticleService articleService;
+    private Long openArticle;
 
     private List<Article> articleViewList;
     
     @PostConstruct
     public void postConstruct() {
+    	openArticle = null;
     	articleViewList = articleService.getArticles();
     }
     
@@ -48,10 +54,13 @@ public class JboardController {
     }
     
     public void openArticle(Long id) {
-    	
+    	openArticle = id;
+    }
+    public void closeArticle() {
+    	openArticle = null;
     }
     public boolean articleOpen(Long id) {
-    	return true;
+    	return (openArticle != null && openArticle.equals(id) );
     }
 	//TODO: does this belong in JsfUtils?
 	public List<Integer> repeatNTimes(int count) {
