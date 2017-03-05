@@ -10,5 +10,12 @@
 <h:outputStylesheet name="jboard.css" library="css"/>
 </ui:define>
 <ui:define name="content">
+<h:form id="commentForm">
+  <div>
+    <ui:repeat varStatus="ar" var="a" value="#{jboardController.articleViewList}">
+      <jbview:jbview article="#{a}"/>
+    </ui:repeat>
+  </div>
+</h:form>
 </ui:define>
 </ui:composition>
