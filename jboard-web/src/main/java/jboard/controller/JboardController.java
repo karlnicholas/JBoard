@@ -1,19 +1,3 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package jboard.controller;
 
 import java.io.Serializable;
@@ -39,16 +23,32 @@ public class JboardController implements Serializable {
 
 //    @Inject private FacesContext facesContext;
     @Inject private ArticleService articleService;
+//    public static final String ACTION_JBOARD = "index.xhtml";
     private Long openArticle;
+    private Long openComment;
+    private String comment;
 
     private List<Article> articleViewList;
     
     @PostConstruct
     public void postConstruct() {
     	openArticle = null;
+    	openComment = null;
     	articleViewList = articleService.getArticles();
     }
     
+    public String postComment() {
+    	if ( comment != null && !comment.isEmpty() ) {
+    		openArticle = openComment;
+    		articleService.postComment(openComment, comment);
+        	articleViewList = articleService.getArticles();
+    	}
+		openComment = null;
+		comment = null;
+//    	return "/views/index.html";
+    	return "";
+    }
+
     public List<Article> getArticleViewList() {
     	return articleViewList;
     }
@@ -62,6 +62,17 @@ public class JboardController implements Serializable {
     public boolean articleOpen(Long id) {
     	return (openArticle != null && openArticle.equals(id) );
     }
+
+    public void openComment(Long id) {
+    	openComment = id;
+    	openArticle = id;
+    }
+    public void closeComment() {
+    	openComment = null;
+    }
+    public boolean commentOpen(Long id) {
+    	return (openComment != null && openComment.equals(id) );
+    }
 	//TODO: does this belong in JsfUtils?
 	public List<Integer> repeatNTimes(int count) {
 		List<Integer> result = new ArrayList<Integer>();
@@ -69,5 +80,13 @@ public class JboardController implements Serializable {
 			result.add(i);
 		}
 		return result;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 }

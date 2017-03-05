@@ -11,7 +11,6 @@ xmlns:composite="http://xmlns.jcp.org/jsf/composite">
 <!-- IMPLEMENTATION -->
 <composite:implementation>
   <div class="jboard">
-    <h:form>
     <div class="jbhead">
       <span class="jbhead date"><h:outputText value="#{cc.attrs.article.date}" ><f:convertDateTime pattern="MMM dd"/></h:outputText>
       </span>
@@ -21,7 +20,16 @@ xmlns:composite="http://xmlns.jcp.org/jsf/composite">
       <ui:fragment rendered="#{jboardController.articleOpen(cc.attrs.article.id)}">
       	<h:commandLink actionListener="#{jboardController.closeArticle()}"><span class="jbhead title"><h:outputText value="#{cc.attrs.article.title}" /></span></h:commandLink>
       </ui:fragment>
+      <ui:fragment rendered="#{!jboardController.commentOpen(cc.attrs.article.id)}">
+      	<h:commandLink actionListener="#{jboardController.openComment(cc.attrs.article.id)}" ><f:ajax render=":commentForm"/><span class="jbhead right"><h:outputText value="Comment" /></span></h:commandLink>
+      </ui:fragment>
+      <ui:fragment rendered="#{jboardController.commentOpen(cc.attrs.article.id)}">
+      	<h:commandLink actionListener="#{jboardController.closeComment()}"><span class="jbhead right"><f:ajax render=":commentForm"/><h:outputText value="Cancel" /></span></h:commandLink>
+      </ui:fragment>
     </div>
+    <ui:fragment rendered="#{jboardController.commentOpen(cc.attrs.article.id)}">
+    	<ui:include src="/resources/jbview/jbcomment.xhtml" />
+    </ui:fragment>
     <ui:fragment rendered="#{jboardController.articleOpen(cc.attrs.article.id)}">
     <div class="jbcomment wrap"><div class="jbcomment casehead"><span class="jbcomment code">User Comments</span></div>
       <ui:repeat var="articleComment" value="#{cc.attrs.article.articleComments}" >
@@ -37,7 +45,6 @@ xmlns:composite="http://xmlns.jcp.org/jsf/composite">
     </ui:fragment>
     <div class="jbsummary wrap"><div class="jbsummary outer"><div class="jbsummary inner"><h:outputText value="#{cc.attrs.article.contents}" /></div></div></div>
     <div class="jboard jbtail" />
-    </h:form>
   </div>
 </composite:implementation>
 </html>

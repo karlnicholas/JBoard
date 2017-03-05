@@ -18,12 +18,14 @@ import javax.persistence.TemporalType;
 @Entity
 @NamedQueries({
     @NamedQuery(name = Article.GET_ARTICLES, query = "select a from Article a"), 
-    @NamedQuery(name = Article.GET_ARTICLES_AND_COMMENTS, query = "select distinct(a) from Article a left join fetch a.articleComments") 
+    @NamedQuery(name = Article.GET_ARTICLES_AND_COMMENTS, query = "select distinct(a) from Article a left join fetch a.articleComments"),  
+    @NamedQuery(name = Article.GET_ARTICLE_BY_ID, query = "select a from Article a where a.id=:id") 
 })
 
 public class Article implements Serializable {
 	public static final String GET_ARTICLES = "Article.GET_ARTICLES";
 	public static final String GET_ARTICLES_AND_COMMENTS = "Article.GET_ARTICLES_AND_COMMENTS";
+	public static final String GET_ARTICLE_BY_ID = "Article.GET_ARTICLE_BY_ID";
 	@Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;

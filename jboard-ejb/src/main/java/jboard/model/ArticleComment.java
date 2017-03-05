@@ -22,6 +22,10 @@ public class ArticleComment implements Serializable {
 	
 	private String comment;
 
+	public ArticleComment() {}
+	public ArticleComment(Article parentArticle) {
+		this.article = parentArticle;
+	}
 	public String getComment() {
 		return comment;
 	}
